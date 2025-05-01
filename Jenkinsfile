@@ -3,20 +3,19 @@ pipeline {
 
     stages {
         stage('Sonar Quality Status') {
-            agent {
-                docker {
-                    image 'maven:3.9.6-eclipse-temurin-17' // or any latest Maven image
-                    args '-v /var/lib/jenkins/.m2:/root/.m2'
-                }
-            }
             steps {
+                checkout scm // make sure source code is pulled
+
                 script {
-                    withSonarQubeEnv(credentialsId: 'sonar-token') {
-                        sh 'mvn clean package sonar:sonar'
+                    docker.image('maven:3.9.6-eclipse-temurin-17').inside('-v /var/lib/jenkins/.m2:/root/.m2') {
+                        withSonarQubeEnv('sonar-server') {
+                            sh 'mvn clean package sonar:sonar'
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
