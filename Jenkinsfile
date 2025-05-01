@@ -5,8 +5,8 @@ pipeline {
         stage('Sonar Quality Status') {
             agent {
                 docker {
-                    image 'maven'
-                    args '-v $HOME/.m2:/root/.m2' // Mount host .m2 to container
+                    image 'maven:3.9.6-eclipse-temurin-17' // or any latest Maven image
+                    args '-v /var/lib/jenkins/.m2:/root/.m2'
                 }
             }
             steps {
@@ -19,3 +19,4 @@ pipeline {
         }
     }
 }
+
